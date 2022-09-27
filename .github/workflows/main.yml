@@ -1,0 +1,17 @@
+on:
+  workflow_call:
+    inputs:
+      prTitle:
+        required: true
+        type: string
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: validate-pr-title
+        uses: solvocloud/action-pr-title@dev
+        with:
+          prTitle: ${{ inputs.prTitle }}
+          jiraUrl: ${{ secrets.JIRA_URL }}
+          jiraEmail: ${{ secrets.JIRA_EMAIL }}
+          jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
