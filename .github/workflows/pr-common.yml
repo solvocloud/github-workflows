@@ -1,3 +1,9 @@
+# Common reusable workflow for PR-related events.
+# A reference to this workflow should be made by other repositories, in workflows that
+# deal with pull requests (i.e. having "on" -> "pull_request" in their header).
+#
+# The idea is to have this common workflow contain whatever jobs and steps needed for all
+# PR-related events.
 on:
   workflow_call: {}
 jobs:
