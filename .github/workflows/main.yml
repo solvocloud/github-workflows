@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: validate-pr-title
-        uses: solvocloud/action-pr-title@dev
+        uses: solvocloud/action-pr-title@1.0
         with:
           prTitle: ${{ inputs.prTitle }}
           jiraUrl: ${{ secrets.JIRA_URL }}
