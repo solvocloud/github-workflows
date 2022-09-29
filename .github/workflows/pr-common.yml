@@ -38,3 +38,25 @@ jobs:
           jiraUrl: ${{ secrets.JIRA_URL }}
           jiraEmail: ${{ secrets.JIRA_EMAIL }}
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Clone repository
+        uses: actions/checkout@v3
+      - id: setup-python
+        name: Setup Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - id: unit-tests
+        name: Run unit tests
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install pytest
+          pip install -e .
+          if [ -f test-requirements.txt ]; then
+            pip install -r test-requirements.txt
+          fi
+          pytest
