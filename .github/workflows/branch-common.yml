@@ -4,7 +4,7 @@ on:
 jobs:
   validate-branch-name:
     runs-on: ubuntu-latest
-    if: github.ref_name != 'main' && github.ref_name != 'dev'
+    if: github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev'
     steps:
       - id: extract-issue-key
         name: Extract issue key

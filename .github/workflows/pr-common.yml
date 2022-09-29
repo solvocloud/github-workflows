@@ -9,8 +9,8 @@ on:
 jobs:
   validate-pr-title:
     runs-on: ubuntu-latest
-    # Don't run this step if the PR is either from dev, or to main (or both).
-    if: github.base_ref != 'main' || github.head_ref != 'dev'
+    # Don't run this step if the PR is either from dev, or to main/master (or both).
+    if: (github.base_ref != 'main' && github.base_ref != 'master') || github.head_ref != 'dev'
     steps:
       - id: extract-issue-key-from-pr
         name: Extract issue key from PR title
