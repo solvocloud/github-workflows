@@ -4,8 +4,7 @@ on:
 jobs:
   validate-branch-name:
     runs-on: ubuntu-latest
-    # Don't run this step if the PR is either from dev, or to main (or both).
-    if: github.base_ref != 'main' || github.head_ref != 'dev'
+    if: github.ref_name != 'main' && github.ref_name != 'dev'
     steps:
       - id: extract-issue-key
         name: Extract issue key
