@@ -1,0 +1,22 @@
+# Common reusable workflow for branch-related events.
+on:
+  workflow_call: {}
+jobs:
+  validate-branch-name:
+    runs-on: ubuntu-latest
+    # Don't run this step if the PR is either from dev, or to main (or both).
+    if: github.base_ref != 'main' || github.head_ref != 'dev'
+    steps:
+      - id: extract-issue-key
+        name: Extract issue key
+        uses: solvocloud/action-extract-jira-key@1.0
+        with:
+          input: ${{ github.ref_name }}
+      - id: validate-branch-name
+        name: Validate branch name
+        uses: solvocloud/action-validate-jira-key@1.0
+        with:
+          key: ${{ steps.extract-issue-key.outputs.issue-key }}
+          jiraUrl: ${{ secrets.JIRA_URL }}
+          jiraEmail: ${{ secrets.JIRA_EMAIL }}
+          jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}

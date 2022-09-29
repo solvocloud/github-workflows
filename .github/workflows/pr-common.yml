@@ -12,10 +12,29 @@ jobs:
     # Don't run this step if the PR is either from dev, or to main (or both).
     if: github.base_ref != 'main' || github.head_ref != 'dev'
     steps:
-      - name: validate-pr-title
-        uses: solvocloud/action-pr-title@1.0
+      - id: extract-issue-key-from-pr
+        name: Extract issue key from PR title
+        uses: solvocloud/action-extract-jira-key@1.0
         with:
-          prTitle: ${{ github.event.pull_request.title }}
+          input: ${{ github.event.pull_request.title }}
+      - id: extract-issue-key-from-branch
+        name: Extract issue key from branch name
+        uses: solvocloud/action-extract-jira-key@1.0
+        with:
+          input: ${{ github.head_ref }}
+      - id: validate-pr-title
+        name: Validate PR title
+        uses: solvocloud/action-validate-jira-key@1.0
+        with:
+          key: ${{ steps.extract-issue-key-from-pr.outputs.issue-key }}
+          jiraUrl: ${{ secrets.JIRA_URL }}
+          jiraEmail: ${{ secrets.JIRA_EMAIL }}
+          jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
+      - id: validate-branch-name
+        name: Validate branch name
+        uses: solvocloud/action-validate-jira-key@1.0
+        with:
+          key: ${{ steps.extract-issue-key-from-branch.outputs.issue-key }}
           jiraUrl: ${{ secrets.JIRA_URL }}
           jiraEmail: ${{ secrets.JIRA_EMAIL }}
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
