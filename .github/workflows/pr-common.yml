@@ -7,7 +7,7 @@
 on:
   workflow_call: {}
 jobs:
-  validate-pr-title:
+  validate-jira-issue-key:
     runs-on: ubuntu-latest
     # Don't run this step if the PR is either from dev, or to main/master (or both).
     if: (github.base_ref != 'main' && github.base_ref != 'master') || github.head_ref != 'dev'
