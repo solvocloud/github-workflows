@@ -6,14 +6,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref_type == 'branch' && github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev'
     steps:
+      - name: Log in to ghcr
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       - id: extract-issue-key
         name: Extract issue key
-        uses: solvocloud/action-extract-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-extract-jira-key:1.0
         with:
           input: ${{ github.ref_name }}
       - id: validate-branch-name
         name: Validate branch name
-        uses: solvocloud/action-validate-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-validate-jira-key:1.0
         with:
           key: ${{ steps.extract-issue-key.outputs.issue-key }}
           jiraUrl: ${{ secrets.JIRA_URL }}

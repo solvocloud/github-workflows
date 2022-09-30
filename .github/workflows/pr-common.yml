@@ -14,17 +14,17 @@ jobs:
     steps:
       - id: extract-issue-key-from-pr
         name: Extract issue key from PR title
-        uses: solvocloud/action-extract-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-extract-jira-key:1.0
         with:
           input: ${{ github.event.pull_request.title }}
       - id: extract-issue-key-from-branch
         name: Extract issue key from branch name
-        uses: solvocloud/action-extract-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-extract-jira-key:1.0
         with:
           input: ${{ github.head_ref }}
       - id: validate-pr-title
         name: Validate PR title
-        uses: solvocloud/action-validate-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-validate-jira-key:1.0
         with:
           key: ${{ steps.extract-issue-key-from-pr.outputs.issue-key }}
           jiraUrl: ${{ secrets.JIRA_URL }}
@@ -32,7 +32,7 @@ jobs:
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
       - id: validate-branch-name
         name: Validate branch name
-        uses: solvocloud/action-validate-jira-key@1.0
+        uses: docker://ghcr.io/solvocloud/action-validate-jira-key:1.0
         with:
           key: ${{ steps.extract-issue-key-from-branch.outputs.issue-key }}
           jiraUrl: ${{ secrets.JIRA_URL }}
