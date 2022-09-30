@@ -1,10 +1,10 @@
-# Common reusable workflow for branch-related events.
+# Common reusable workflow for create-related events.
 on:
   workflow_call: {}
 jobs:
   validate-branch-name:
     runs-on: ubuntu-latest
-    if: github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev'
+    if: github.ref_type == 'branch' && github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev'
     steps:
       - id: extract-issue-key
         name: Extract issue key
