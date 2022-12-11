@@ -4,7 +4,7 @@ on:
 jobs:
   validate-branch-name:
     runs-on: ubuntu-latest
-    if: github.ref_type == 'branch' && github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev'
+    if: github.ref_type == 'branch' && github.ref_name != 'main' && github.ref_name != 'master' && github.ref_name != 'dev' && !startsWith('dependabot/', github.ref_name) && !startsWith('revert-', github.ref_name)
     steps:
       - id: extract-issue-key
         name: Extract issue key

@@ -10,7 +10,7 @@ jobs:
   validate-jira-issue-key:
     runs-on: ubuntu-latest
     # Don't run this step if the PR is either from dev, or to main/master (or both).
-    if: (github.base_ref != 'main' && github.base_ref != 'master') || github.head_ref != 'dev'
+    if: (github.base_ref != 'main' && github.base_ref != 'master') || (github.head_ref != 'dev' && !startsWith('dependabot/', github.head_ref) && !startsWith('revert-', github.head_ref))
     steps:
       - id: extract-issue-key-from-pr
         name: Extract issue key from PR title
