@@ -6,6 +6,8 @@
 # PR-related events.
 on:
   workflow_call: {}
+permissions:
+  contents: read
 jobs:
   validate-jira-issue-key:
     runs-on: ubuntu-latest
