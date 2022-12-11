@@ -38,6 +38,11 @@ jobs:
           jiraUrl: ${{ secrets.JIRA_URL }}
           jiraEmail: ${{ secrets.JIRA_EMAIL }}
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
+  validate-dependabot:
+    runs-on: ubuntu-latest
+    # Don't run this step if the PR is either from dev, or to main/master (or both).
+    if: (github.base_ref != 'main' && github.base_ref != 'master') || github.head_ref != 'dev'
+    steps:
       - id: dependabot-review
         name: Dependabot review
         uses: actions/dependency-review-action@v3
