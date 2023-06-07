@@ -7,6 +7,58 @@
 on:
   workflow_call: {}
 jobs:
+  terraform-plan:
+    if: github.base_ref == 'main' || github.base_ref == 'dev'
+    permissions:
+      id-token: write   # This is required for requesting the JWT
+      contents: read    # This is required for actions/checkout
+      pull-requests: write
+    runs-on: ubuntu-latest
+    name: Create a plan for a terraform configuration
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TERRAFORM_VERSION: '>= 1.3.3, < 2.0.0'
+      TERRAFORM_FOLDER: 'terraform/app'
+      TERRAFORM_WORKSPACE: ${{ github.base_ref == 'main' && 'prod' || 'Dev' }}
+      ENVIRONMENT_ROLE_TO_ASSUME_ARN: ${{ github.base_ref == 'main' && secrets.ORG_TERRAFORM_PLAN_PROD_ROLE_ARN || secrets.ORG_TERRAFORM_PLAN_DEV_ROLE_ARN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check if repo holding terraform code
+        id: terraformCodeCheck
+        run: |
+          if [ -d "$TERRAFORM_FOLDER" ]; then
+            echo "Found Terraform code!"
+            echo "terraformCodeExists=true" >> $GITHUB_OUTPUT
+          else
+            echo "No Terraform code found..."
+            echo "terraformCodeExists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Connect to AWS github identity provider
+        if: steps.terraformCodeCheck.outputs.terraformCodeExists == 'true'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+            role-to-assume: ${{ secrets.ORG_GITHUB_ENTRY_ROOT_ACCOUNT_ROLE_ARN }}
+            role-session-name: github-action-terraform-plan
+            aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Configure AWS credentials for account
+        if: steps.terraformCodeCheck.outputs.terraformCodeExists == 'true'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+            role-to-assume: ${{ env.ENVIRONMENT_ROLE_TO_ASSUME_ARN }}
+            aws-region: ${{ vars.AWS_REGION }}
+            role-chaining: true
+
+      - name: terraform plan
+        if: steps.terraformCodeCheck.outputs.terraformCodeExists == 'true'
+        uses: dflook/terraform-plan@v1
+        with:
+          path: ${{ env.TERRAFORM_FOLDER }}
+          workspace: ${{ env.TERRAFORM_WORKSPACE }}
+
   validate-jira-issue-key:
     runs-on: ubuntu-latest
     # Don't run this step if the PR is either from dev, or to main/master (or both).
