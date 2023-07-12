@@ -12,12 +12,19 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Connect to AWS github identity provider
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.ORG_GITHUB_ENTRY_ROOT_ACCOUNT_ROLE_ARN }}
+          role-session-name: ${{ inputs.module_name }}-org
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_GITHUB_ROLE }}
-          role-session-name: ${{ inputs.module_name }}
+          role-session-name: ${{ inputs.module_name }}-module
+          role-chaining: true
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Check automated tests
