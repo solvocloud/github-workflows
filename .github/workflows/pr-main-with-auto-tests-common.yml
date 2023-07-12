@@ -28,7 +28,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          repository: github-workflows
+          repository: solvocloud/github-workflows
       - name: Check automated tests
         run: .github/scripts/check-automated-tests.sh ${{ inputs.module_name }} ${{ github.event.pull_request.head.sha }} ${{ vars.AWS_ARTIFACTS_BUCKET_NAME }}
         shell: bash
