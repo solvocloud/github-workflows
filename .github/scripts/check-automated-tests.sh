@@ -27,7 +27,9 @@ if [ ${AWS_OUTPUT_RC} -ne 0 ] ; then
     BUILD_IDS=$(aws codebuild list-builds-for-project --project-name ${CODEBUILD_PROJECT_NAME} --sort DESCENDING --no-paginate --output json | jq -r '.ids[]')
     RELEVANT_BUILD_ID=
     while IFS= read -r BUILD_ID ; do
+      echo "Checking build ID: ${BUILD_ID}"
       RESOLVED_SOURCE_VERSION=$(aws codebuild batch-get-builds --ids ${BUILD_ID} --output text --query "builds[0].resolvedSourceVersion")
+      echo "Resolved source version: ${RESOLVED_SOURCE_VERSION}"
       if [ "${RESOLVED_SOURCE_VERSION}" = "${HEAD_REF}" ] ; then
         RELEVANT_BUILD_ID=${BUILD_ID}
         break
