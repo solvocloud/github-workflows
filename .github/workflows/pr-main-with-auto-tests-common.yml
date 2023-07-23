@@ -4,6 +4,10 @@ on:
       module_name:
         required: true
         type: string
+      codebuild_project_name:
+        required: false
+        type: string
+        default: ""
 jobs:
   check-automated-tests:
     runs-on: ubuntu-latest
@@ -29,5 +33,5 @@ jobs:
         with:
           repository: solvocloud/github-workflows
       - name: Check automated tests
-        run: .github/scripts/check-automated-tests.sh ${{ inputs.module_name }} ${{ github.event.pull_request.head.sha }} ${{ vars.AWS_ARTIFACTS_BUCKET_NAME }}
+        run: .github/scripts/check-automated-tests.sh ${{ inputs.module_name }} ${{ github.event.pull_request.head.sha }} ${{ vars.AWS_ARTIFACTS_BUCKET_NAME }} ${{ inputs.codebuild_project_name }}
         shell: bash
