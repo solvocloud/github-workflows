@@ -70,7 +70,7 @@ echo "Automated tests build ID: ${BUILD_ID}"
 
 BUILD_STATUS="IN_PROGRESS"
 while [ "$BUILD_STATUS" == "IN_PROGRESS" ]; do
-  echo "Checking build status."
+  echo "Checking build status"
   BUILD=$(aws codebuild batch-get-builds --ids ${BUILD_ID})
   BUILD_STATUS=$(echo ${BUILD} | jq '.builds[0].buildStatus' -r)
   if [ "${BUILD_STATUS}" == "IN_PROGRESS" ]; then
