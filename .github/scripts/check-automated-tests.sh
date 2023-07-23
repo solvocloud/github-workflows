@@ -34,7 +34,7 @@ if [ ${AWS_OUTPUT_RC} -ne 0 ] ; then
         RELEVANT_BUILD_ID=${BUILD_ID}
         break
       fi
-    done
+    done <<< "${BUILD_IDS}"
 
     if [ -z "${RELEVANT_BUILD_ID}" ] ; then
       echo "Failed finding relevant build ID for ref ${HEAD_REF}"
