@@ -79,16 +79,16 @@ jobs:
         uses: solvocloud/action-validate-jira-key@1.1
         with:
           key: ${{ steps.extract-issue-key-from-pr.outputs.issue-key }}
-          jiraUrl: ${{ secrets.JIRA_URL }}
-          jiraEmail: ${{ secrets.JIRA_EMAIL }}
+          jiraUrl: ${{ vars.JIRA_URL }}
+          jiraEmail: ${{ vars.JIRA_EMAIL }}
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
       - id: validate-branch-name
         name: Validate branch name
         uses: solvocloud/action-validate-jira-key@1.1
         with:
           key: ${{ steps.extract-issue-key-from-branch.outputs.issue-key }}
-          jiraUrl: ${{ secrets.JIRA_URL }}
-          jiraEmail: ${{ secrets.JIRA_EMAIL }}
+          jiraUrl: ${{ vars.JIRA_URL }}
+          jiraEmail: ${{ vars.JIRA_EMAIL }}
           jiraApiToken: ${{ secrets.JIRA_API_TOKEN }}
 #  validate-dependabot:
 #    runs-on: ubuntu-latest
