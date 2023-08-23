@@ -12,6 +12,7 @@ jobs:
         uses: solvocloud/action-transition-jira-issues@1.0
         with:
           payload_string: ${{ toJson(github.event) }}
+          # Within the "SOLVO" JIRA project, this is the transition ID that takes issues into "Prod" status.
           transition_id: 51
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
