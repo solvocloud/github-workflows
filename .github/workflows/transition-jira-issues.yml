@@ -1,0 +1,21 @@
+on:
+  workflow_call: {}
+jobs:
+  transition-jira-issues:
+    runs-on: ubuntu-latest
+    name: Transition JIRA issues
+    steps:
+      - id: extract-event
+        name: Write event
+        run: echo '${{ toJson(github.event) }}' >> /tmp/payload.json
+      - id: transition-jira-issues
+        name: Transition JIRA issues
+        uses: solvocloud/action-transition-jira-issues@1.0
+        with:
+          payload_file: /tmp/payload.json
+          transition_id: 51
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      JIRA_URL: ${{ vars.JIRA_URL }}
+      JIRA_EMAIL: ${{ vars.JIRA_EMAIL }}
+      JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
