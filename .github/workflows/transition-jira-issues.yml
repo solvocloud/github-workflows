@@ -2,6 +2,7 @@ on:
   workflow_call: {}
 jobs:
   transition-jira-issues:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Transition JIRA issues
     steps:
