@@ -17,6 +17,8 @@ jobs:
     name: Create a plan for a terraform configuration
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TERRAFORM_HTTP_CREDENTIALS: | # This is used to pull solvo terrafrom modules from github infrastructure repo  
+        github.com/solvocloud/infrastructure.git=${{secrets.ORG_GITHUB_OPS_USER_NAME}}:${{ secrets.ORG_GITHUB_OPS_USER_TOKEN }}
       TERRAFORM_VERSION: '>= 1.3.3, < 2.0.0'
       TERRAFORM_FOLDER: 'terraform/app'
       TERRAFORM_WORKSPACE: ${{ github.base_ref == 'main' && 'prod' || 'Dev' }}
