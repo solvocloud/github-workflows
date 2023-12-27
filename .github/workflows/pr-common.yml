@@ -60,7 +60,20 @@ jobs:
         with:
           path: ${{ env.TERRAFORM_FOLDER }}
           workspace: ${{ env.TERRAFORM_WORKSPACE }}
-
+          
+  gitleaks-scan:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.ORG_GITLEAKS_LICENSE}}
+          GITLEAKS_VERSION: latest
+  
   validate-jira-issue-key:
     runs-on: ubuntu-latest
     # Don't run this step if the PR is either from dev, or to main/master (or both).
