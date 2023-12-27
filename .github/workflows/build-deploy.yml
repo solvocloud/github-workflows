@@ -14,14 +14,39 @@ jobs:
     strategy:
       matrix:
         project: ${{ fromJson(inputs.projects) }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        
+      - name: Connect to AWS github identity provider
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ORG_GITHUB_ENTRY_ROOT_ACCOUNT_ROLE_ARN }}
+          role-session-name: github-action-build-and-deploy
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Configure AWS credentials for account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ORG_TERRAFORM_PLAN_DEV_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-chaining: true
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0.x' # Adjust as needed
+          
+      - name: Prepare NuGet Repository
+        run: |
+            echo "Connecting to CodeArtifact"
+            dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
+            dotnet codeartifact-creds install
+            dotnet nuget remove source nuget.org 
+            dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain solvo --domain-owner ${{var.AWS_DEV_ACCOUNT_NUMBER}} --repository nuget-store --format nuget --query repositoryEndpoint --output text)"v3/index.json"
+        shell: bash
 
       - name: .NET Build for Project
         run: dotnet build ${{ matrix.project }} --configuration Release
