@@ -1,0 +1,35 @@
+name: Reusable Build and Deploy
+
+on:
+  workflow_call:
+    inputs:
+      projects:
+        required: true
+        type: string
+        description: JSON array of project paths
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(inputs.projects) }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x' # Adjust as needed
+
+      - name: .NET Build for Project
+        run: dotnet build ${{ matrix.project }} --configuration Release
+
+#      - name: Upload Build Artifact for Project
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: build-artifacts-${{ matrix.project }}
+#          path: ${{ matrix.project }}/build/output # Adjust as needed
+
+      # ... Deployment steps follow
