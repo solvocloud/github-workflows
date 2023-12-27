@@ -45,7 +45,7 @@ jobs:
             dotnet tool install -g AWS.CodeArtifact.NuGet.CredentialProvider
             dotnet codeartifact-creds install
             dotnet nuget remove source nuget.org 
-            dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain solvo --domain-owner ${{var.AWS_DEV_ACCOUNT_NUMBER}} --repository nuget-store --format nuget --query repositoryEndpoint --output text)"v3/index.json"
+            dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain solvo --domain-owner ${{vars.AWS_DEV_ACCOUNT_NUMBER}} --repository nuget-store --format nuget --query repositoryEndpoint --output text)"v3/index.json"
         shell: bash
 
       - name: .NET Build for Project
