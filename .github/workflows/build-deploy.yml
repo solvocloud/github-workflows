@@ -15,9 +15,9 @@ jobs:
       contents: read    # This is required for actions/checkout
       pull-requests: write
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project: ${{ fromJson(inputs.projects) }}
+#    strategy:
+#      matrix:
+#        project: ${{ fromJson(inputs.projects) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -52,9 +52,21 @@ jobs:
             dotnet nuget add source -n codeartifact $(aws codeartifact get-repository-endpoint --domain solvo --domain-owner ${{vars.AWS_DEV_ACCOUNT_NUMBER}} --repository nuget-store --format nuget --query repositoryEndpoint --output text)"v3/index.json"
         shell: bash
 
-      - name: .NET Build for Project
-        run: dotnet build ${{ matrix.project }} --configuration Release
-
+      - name: Run Unit Tests
+        run: dotnet test
+      
+      - name: .NET Publish Projects
+        run: |
+          mkdir build_output
+          for project_path in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
+            echo "Building $project_path"
+            PROJECT_NAME=${project_path#src/}
+            echo "Project Name: $PROJECT_NAME"
+            dotnet publish -p:TreatWarningsAsErrors=true -c release -o published/$PROJECT_NAME $project_path -r linux-x64 --self-contained false
+          done
+        
+#      - name: Run Unit Tests
+#        run: dotnet build ${{ matrix.project }} --configuration Release
 #      - name: Upload Build Artifact for Project
 #        uses: actions/upload-artifact@v2
 #        with:
