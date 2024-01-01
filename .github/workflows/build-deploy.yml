@@ -53,15 +53,16 @@ jobs:
         shell: bash
 
       - name: Run Unit Tests
-        run: dotnet test
+        run: |
+           set -e
+           dotnet test -v minimal
       
       - name: .NET Publish Projects
         run: |
           mkdir build_output
           for project_path in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
-            echo "Building $project_path"
             PROJECT_NAME=${project_path#src/}
-            echo "Project Name: $PROJECT_NAME"
+            echo "Building: $PROJECT_NAME"
             dotnet publish -p:TreatWarningsAsErrors=true -c release -o published/$PROJECT_NAME $project_path -r linux-x64 --self-contained false
           done
         
