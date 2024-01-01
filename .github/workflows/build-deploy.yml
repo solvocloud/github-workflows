@@ -34,7 +34,7 @@ jobs:
       - name: Configure AWS credentials for account
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.ORG_TERRAFORM_PLAN_DEV_ROLE_ARN }}
+          role-to-assume: ${{ secrets.ORG_GITHUB_BUILD_DEV_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-chaining: true
 
