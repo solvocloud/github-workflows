@@ -66,11 +66,8 @@ jobs:
             PROJECT_NAME=${project_path#src/}
             echo "Building: $PROJECT_NAME"
             dotnet publish -p:TreatWarningsAsErrors=true -c release -o published/$PROJECT_NAME $project_path -r linux-x64 --self-contained false
-            
-            JOB_URL = ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}         
-            JOB_INFO = "JOB_URL = $JOB_URL\nREVISION = $GITHUB_SHA"
-            echo "JOB_INFO: $JOB_INFO"          
-            printf $JOB_INFO > published/$PROJECT_NAME/info.txt
+            echo "JOB_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" > published/$PROJECT_NAME/info.txt
+            echo "REVISION=${{ github.sha }}" >> published/$PROJECT_NAME/info.txt
           done      
           zip -rj build_output/$PROJECT_NAME.zip published/$PROJECT_NAME 
           
