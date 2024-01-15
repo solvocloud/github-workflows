@@ -7,6 +7,11 @@ on:
         required: true
         type: string
         description: JSON array of project paths
+      repo-name:
+        required: true
+        type: string
+        description: repo name for s3 upload
+        
 
 jobs:
   build-net-project:
