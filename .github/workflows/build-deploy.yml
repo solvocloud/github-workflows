@@ -9,15 +9,12 @@ on:
         description: JSON array of project paths
 
 jobs:
-  build-and-deploy:
+  build-net-project:
     permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
       pull-requests: write
     runs-on: ubuntu-latest
-#    strategy:
-#      matrix:
-#        project: ${{ fromJson(inputs.projects) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -57,16 +54,31 @@ jobs:
            set -e
            dotnet test --verbosity quiet
       
-      - name: .NET Publish Projects
+      - name: .NET Build & Zip Projects
         run: |
           mkdir build_output
           for project_path in $(echo '${{ inputs.projects }}' | jq -r '.[]'); do
             PROJECT_NAME=${project_path#src/}
             echo "Building: $PROJECT_NAME"
             dotnet publish -p:TreatWarningsAsErrors=true -c release -o published/$PROJECT_NAME $project_path -r linux-x64 --self-contained false
-          done
+            
+            JOB_URL = ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}         
+            JOB_INFO = "JOB_URL = $JOB_URL\nREVISION = $GITHUB_SHA"
+            echo "JOB_INFO: $JOB_INFO"          
+            printf $JOB_INFO > published/$PROJECT_NAME/info.txt
+          done      
+          zip -rj build_output/$PROJECT_NAME.zip published/$PROJECT_NAME 
+          
+      - name: Upload To Artifacts Bucket
+        run: |            
+          S3_PREFIX=${vars.AWS_ARTIFACTS_BUCKET_NAME}/${inputs.repo-name}/$GITHUB_SHA          
+          echo -e "upload artifacts to -\nhttps://s3.console.aws.amazon.com/s3/buckets/${S3_PREFIX}/\n"
+          
+          
         
-#      - name: Run Unit Tests
+      
+      
+      #      - name: Run Unit Tests
 #        run: dotnet build ${{ matrix.project }} --configuration Release
 #      - name: Upload Build Artifact for Project
 #        uses: actions/upload-artifact@v2
