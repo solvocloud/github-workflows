@@ -26,6 +26,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         
+        
+      - name: Upload To Artifacts Bucket
+        run: |
+          S3_PREFIX="${{ vars.AWS_ARTIFACTS_BUCKET_NAME }}/${{ inputs.repo-name }}/$GITHUB_SHA"
+          echo -e "upload artifacts to -\nhttps://s3.console.aws.amazon.com/s3/buckets/${S3_PREFIX}/\n"
+        
       - name: Connect to AWS github identity provider
         uses: aws-actions/configure-aws-credentials@v4
         with:
