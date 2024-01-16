@@ -68,8 +68,9 @@ jobs:
             dotnet publish -p:TreatWarningsAsErrors=true -c release -o published/$PROJECT_NAME $project_path -r linux-x64 --self-contained false
             echo "JOB_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" > published/$PROJECT_NAME/info.txt
             echo "REVISION=${{ github.sha }}" >> published/$PROJECT_NAME/info.txt
+            zip -rj build_output/$PROJECT_NAME.zip published/$PROJECT_NAME 
           done      
-          zip -rj build_output/$PROJECT_NAME.zip published/$PROJECT_NAME 
+         
           
       - name: Upload To Artifacts Bucket
         run: |            
