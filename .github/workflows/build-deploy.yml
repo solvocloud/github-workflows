@@ -73,19 +73,7 @@ jobs:
           
       - name: Upload To Artifacts Bucket
         run: |            
-          S3_PREFIX="${{ vars.AWS_ARTIFACTS_BUCKET_NAME }}/${{ github.event.inputs.repo-name }}/$GITHUB_SHA"
+          S3_PREFIX="${{ vars.AWS_ARTIFACTS_BUCKET_NAME }}/${{ inputs.repo-name }}/$GITHUB_SHA"
           echo -e "upload artifacts to -\nhttps://s3.console.aws.amazon.com/s3/buckets/${S3_PREFIX}/\n"
           
-          
         
-      
-      
-      #      - name: Run Unit Tests
-#        run: dotnet build ${{ matrix.project }} --configuration Release
-#      - name: Upload Build Artifact for Project
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: build-artifacts-${{ matrix.project }}
-#          path: ${{ matrix.project }}/build/output # Adjust as needed
-
-      # ... Deployment steps follow
